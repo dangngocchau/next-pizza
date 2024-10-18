@@ -1,4 +1,9 @@
-import { FilterCheckbox, RangeSlider, Title } from "@/components/shared";
+import {
+    CheckboxFiltersGroup,
+    FilterCheckbox,
+    RangeSlider,
+    Title,
+} from "@/components/shared";
 import { Input } from "@/components/ui";
 import React from "react";
 
@@ -34,6 +39,39 @@ export const Filters = ({ className }: Props) => {
                 </div>
                 <RangeSlider min={0} max={5000} step={10} value={[0, 5000]} />
             </div>
+            <CheckboxFiltersGroup
+                title="Test"
+                className="mt-5"
+                limit={6}
+                defaultItem={[
+                    { text: "Text 1", value: "1" },
+                    { text: "Text 2", value: "2" },
+                    { text: "Text 3", value: "3" },
+                    { text: "Text 4", value: "4" },
+                    { text: "Text 5", value: "5" },
+                    { text: "Text 6", value: "6" },
+                ]}
+                items={[
+                    { text: "Text 1", value: "1" },
+                    { text: "Text 2", value: "2" },
+                    { text: "Text 3", value: "3" },
+                    { text: "Text 4", value: "4" },
+                    { text: "Text 5", value: "5" },
+                    { text: "Text 6", value: "6" },
+                    { text: "Text 1", value: "1" },
+                    { text: "Text 2", value: "2" },
+                    { text: "Text 3", value: "3" },
+                    { text: "Text 4", value: "4" },
+                    { text: "Text 5", value: "5" },
+                    { text: "Text 6", value: "6" },
+                    { text: "Text 1", value: "1" },
+                    { text: "Text 2", value: "2" },
+                    { text: "Text 3", value: "3" },
+                    { text: "Text 4", value: "4" },
+                    { text: "Text 5", value: "5" },
+                    { text: "Text 6", value: "6" },
+                ]}
+            />
         </div>
     );
 };
