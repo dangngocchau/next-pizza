@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { useCategoryStore } from "@/store/category";
 import React from "react";
 
 type Props = {
@@ -6,14 +9,27 @@ type Props = {
 };
 
 const categoriesMock = [
-    "Pizza type 1",
-    "Pizza type 2",
-    "Pizza type 3",
-    "Pizza type 4",
+    {
+        id: 1,
+        name: "Pizza 1",
+    },
+    {
+        id: 2,
+        name: "Pizza 2",
+    },
+    {
+        id: 3,
+        name: "Pizza 3",
+    },
+    {
+        id: 4,
+        name: "Pizza 4",
+    },
 ];
-const activeIndex = 0;
 
 export const Categories = ({ className }: Props) => {
+    const categoryActiveId = useCategoryStore((state) => state.activeId);
+
     return (
         <div
             className={cn(
@@ -21,17 +37,17 @@ export const Categories = ({ className }: Props) => {
                 className
             )}
         >
-            {categoriesMock.map((category, index) => (
+            {categoriesMock.map(({ name, id }, index) => (
                 <a
                     key={index}
                     href=""
                     className={cn(
                         "flex items-center font-bold h-11 rounded-2xl px-5",
-                        activeIndex === index &&
+                        categoryActiveId === id &&
                             "bg-white shadow-md shadow-gray-200 text-primary"
                     )}
                 >
-                    <button>{category}</button>
+                    <button>{name}</button>
                 </a>
             ))}
         </div>
