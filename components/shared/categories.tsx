@@ -40,7 +40,7 @@ export const Categories = ({ className }: Props) => {
             {categoriesMock.map(({ name, id }, index) => (
                 <a
                     key={index}
-                    href=""
+                    href={`/#${name}`}
                     className={cn(
                         "flex items-center font-bold h-11 rounded-2xl px-5",
                         categoryActiveId === id &&
