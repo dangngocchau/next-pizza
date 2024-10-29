@@ -8,7 +8,7 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { useClickAway } from "react-use";
+import { useClickAway, useDebounce } from "react-use";
 
 type Props = {
     classMame?: string;
@@ -20,9 +20,14 @@ export const SearchInput = ({ classMame }: Props) => {
     const [products, setProducts] = useState<Product[]>([]);
     const ref = useRef(null);
 
-    //TODO: Check debounce for input later
     const handleSearchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
+    };
+
+    const onClickItem = () => {
+        setFocus(false);
+        setSearchQuery("");
+        setProducts([]);
     };
 
     // Close search input when click outside
@@ -31,11 +36,15 @@ export const SearchInput = ({ classMame }: Props) => {
     });
 
     //TODO: Store to zustand later
-    useEffect(() => {
-        Api.products.search(searchQuery).then((data) => {
-            setProducts(data);
-        });
-    }, [searchQuery]);
+    useDebounce(
+        () => {
+            Api.products.search(searchQuery).then((data) => {
+                setProducts(data);
+            });
+        },
+        250,
+        [searchQuery]
+    );
 
     return (
         <>
@@ -64,22 +73,24 @@ export const SearchInput = ({ classMame }: Props) => {
                         focus && "visible opacity-100 top-12"
                     )}
                 >
-                    {products.map((product) => (
-                        <Link
-                            className="flex items-center gap-5 px-3 py-2 hover:bg-primary/10"
-                            href={"/product/1"}
-                            key={`/product/${product.id}`}
-                        >
-                            <Image
-                                className="rounded-sm "
-                                src={product.imageUrl}
-                                width={32}
-                                height={32}
-                                alt={product.name}
-                            />
-                            <span>{product.name}</span>
-                        </Link>
-                    ))}
+                    {products.length > 0 &&
+                        products.map((product) => (
+                            <Link
+                                className="flex items-center gap-5 px-3 py-2 hover:bg-primary/10"
+                                href={"/product/1"}
+                                key={`/product/${product.id}`}
+                                onClick={onClickItem}
+                            >
+                                <Image
+                                    className="rounded-sm "
+                                    src={product.imageUrl}
+                                    width={32}
+                                    height={32}
+                                    alt={product.name}
+                                />
+                                <span>{product.name}</span>
+                            </Link>
+                        ))}
                 </div>
             </div>
         </>
