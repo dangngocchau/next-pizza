@@ -15,7 +15,8 @@ type Props = {
 };
 
 export const Filters = ({ className }: Props) => {
-    const { ingredients, loading } = useFilterIngredients();
+    const { ingredients, loading, onAddId, selectedIds } =
+        useFilterIngredients();
 
     const items = ingredients.map((ingredient) => ({
         text: ingredient.name,
@@ -56,6 +57,8 @@ export const Filters = ({ className }: Props) => {
                 defaultItem={items.slice(0, 6)}
                 items={items}
                 loading={loading}
+                onClickCheckbox={onAddId}
+                selectedIds={selectedIds}
             />
         </div>
     );

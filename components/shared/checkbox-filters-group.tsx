@@ -6,6 +6,7 @@ import {
 } from "@/components/shared/filter-checkbox";
 import { Button, Input, Skeleton } from "@/components/ui";
 import React, { ChangeEvent, useState } from "react";
+import { useSet } from "react-use";
 
 type Item = FilterChecboxProps;
 
@@ -17,8 +18,9 @@ type Props = {
     limit?: number;
     loading?: boolean;
     searchInputPlaceholder?: string;
-    onChange?: (values: string[]) => void;
+    onClickCheckbox?: (id: string) => void;
     defaultValue?: string[];
+    selectedIds?: Set<string>;
 };
 
 export const CheckboxFiltersGroup = ({
@@ -29,15 +31,16 @@ export const CheckboxFiltersGroup = ({
     defaultItem,
     searchInputPlaceholder = "Search...",
     loading,
-    onChange,
+    onClickCheckbox,
+    selectedIds,
     defaultValue,
 }: Props) => {
     const [showAll, setShowAll] = useState(false);
     const [searchValue, setSearchValue] = useState<string>("");
 
     const list = showAll
-        ? items.filter((item) =>
-              item.text.toLowerCase().includes(searchValue.toLowerCase())
+        ? items.filter(({ text }) =>
+              text.toLowerCase().includes(searchValue.toLowerCase())
           )
         : defaultItem?.slice(0, limit);
 
@@ -82,8 +85,8 @@ export const CheckboxFiltersGroup = ({
                         text={item.text}
                         value={item.value}
                         endAdornment={item.endAdornment}
-                        checked={false}
-                        onCheckedChange={(ids) => console.log(ids)}
+                        checked={selectedIds?.has(item.value)}
+                        onCheckedChange={() => onClickCheckbox?.(item.value)}
                     />
                 ))}
             </div>
