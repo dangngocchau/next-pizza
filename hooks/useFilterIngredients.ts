@@ -1,27 +1,60 @@
 import { Api } from "@/services/api-client";
-import { Ingredient } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useSet } from "react-use";
 
-interface ReturnProps {
-    ingredients: Ingredient[];
-    loading: boolean;
-    selectedIds: Set<string>;
-    onAddId: (id: string) => void;
+type Ingredient = {
+    text: string;
+    value: string;
+};
+
+interface PriceRangeProps {
+    priceFrom: number;
+    priceTo: number;
 }
 
-export const useFilterIngredients = (): ReturnProps => {
-    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+interface ReturnProps {
+    ingredientData: Ingredient[];
+    loading: boolean;
+    sizes: Set<string>;
+    types: Set<string>;
+    ingredients: Set<string>;
+    toggleSizes: (size: string) => void;
+    toggleTypes: (type: string) => void;
+    toggleIngredients: (ingredient: string) => void;
+    updatePriceRange: (values: Partial<PriceRangeProps>) => void;
+    priceRange: PriceRangeProps;
+}
 
-    const [selectedIds, { toggle }] = useSet(new Set<string>([]));
+//TODO: Implement the useFilter hook
+export const useFilter = (): ReturnProps => {
+    const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
+    const [types, { toggle: toggleTypes }] = useSet(new Set<string>([]));
+    const [ingredients, { toggle: toggleIngredients }] = useSet(new Set<string>([]));
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [ingredientData, setIngredientData] = useState<Ingredient[]>([]);
+    const [priceRange, setPriceRange] = useState<PriceRangeProps>({
+        priceFrom: 0,
+        priceTo: 1000,
+    });
+
+    const updatePriceRange = (values: Partial<PriceRangeProps>) => {
+        setPriceRange((prev) => ({
+            ...prev,
+            ...values,
+        }));
+    };
 
     useEffect(() => {
         async function fetchIngredients() {
             try {
                 setLoading(true);
                 const ingredients = await Api.ingredients.getAll();
-                setIngredients(ingredients);
+                const convertedIngredients = ingredients.map((ingredient) => ({
+                    text: ingredient.name,
+                    value: String(ingredient.id),
+                }));
+                setIngredientData(convertedIngredients);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -32,5 +65,16 @@ export const useFilterIngredients = (): ReturnProps => {
         fetchIngredients();
     }, []);
 
-    return { ingredients, loading, onAddId: toggle, selectedIds };
+    return {
+        sizes,
+        types,
+        ingredients,
+        toggleSizes,
+        toggleTypes,
+        toggleIngredients,
+        ingredientData,
+        loading,
+        updatePriceRange,
+        priceRange,
+    };
 };
