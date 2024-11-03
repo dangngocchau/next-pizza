@@ -1,16 +1,19 @@
 "use client";
 
-import { CheckboxFiltersGroup, FilterCheckbox, RangeSlider, Title } from "@/components/shared";
+import { CheckboxFiltersGroup, RangeSlider, Title } from "@/components/shared";
 import { Input } from "@/components/ui";
-import { useFilter } from "@/hooks/useFilterIngredients";
-import React, { useState } from "react";
-import { useSet } from "react-use";
+import { PriceRangeProps, useFilter } from "@/hooks/useFilterIngredients";
+import { useRouter } from "next/navigation";
+import qs from "qs";
+import { useEffect } from "react";
 
 type Props = {
     className?: string;
 };
 
 export const Filters = ({ className }: Props) => {
+    const router = useRouter();
+
     const {
         sizes,
         types,
@@ -23,6 +26,21 @@ export const Filters = ({ className }: Props) => {
         priceRange,
         updatePriceRange,
     } = useFilter();
+
+    useEffect(() => {
+        const filters = {
+            sizes: Array.from(sizes),
+            types: Array.from(types),
+            ingredients: Array.from(ingredients),
+            priceFrom: priceRange.priceFrom,
+            priceTo: priceRange.priceTo,
+        };
+
+        const query = qs.stringify(filters, { arrayFormat: "comma" });
+        router.push(`?${query}`, {
+            scroll: false,
+        });
+    }, [ingredients, sizes, types, priceRange, router]);
 
     return (
         <div className={className}>
@@ -72,6 +90,7 @@ export const Filters = ({ className }: Props) => {
                         type="number"
                         min={100}
                         max={1000}
+                        placeholder="1000"
                         value={String(priceRange.priceTo)}
                         onChange={(e) => updatePriceRange({ priceTo: Number(e.target.value) })}
                     />
@@ -80,7 +99,7 @@ export const Filters = ({ className }: Props) => {
                     min={0}
                     max={5000}
                     step={10}
-                    value={[priceRange.priceFrom, priceRange.priceTo]}
+                    value={[priceRange.priceFrom || 0, priceRange.priceTo || 1000]}
                     onValueChange={([from, to]) => updatePriceRange({ priceFrom: from, priceTo: to })}
                 />
             </div>

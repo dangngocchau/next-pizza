@@ -1,18 +1,19 @@
 import { Api } from "@/services/api-client";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSet } from "react-use";
 
-type Ingredient = {
+export type Ingredient = {
     text: string;
     value: string;
 };
 
-interface PriceRangeProps {
-    priceFrom: number;
-    priceTo: number;
+export interface PriceRangeProps {
+    priceFrom?: number;
+    priceTo?: number;
 }
 
-interface ReturnProps {
+export interface ReturnProps {
     ingredientData: Ingredient[];
     loading: boolean;
     sizes: Set<string>;
@@ -25,8 +26,17 @@ interface ReturnProps {
     priceRange: PriceRangeProps;
 }
 
+interface QueryFilters extends PriceRangeProps {
+    sizes: string[];
+    types: string[];
+    ingredients: string[];
+}
+
 //TODO: Implement the useFilter hook
 export const useFilter = (): ReturnProps => {
+    const searchParams = useSearchParams() as unknown as Map<keyof QueryFilters, string>;
+    console.log("🐖 ~ useFilter ~ searchParams:", searchParams);
+
     const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
     const [types, { toggle: toggleTypes }] = useSet(new Set<string>([]));
     const [ingredients, { toggle: toggleIngredients }] = useSet(new Set<string>([]));
@@ -34,8 +44,8 @@ export const useFilter = (): ReturnProps => {
     const [loading, setLoading] = useState<boolean>(false);
     const [ingredientData, setIngredientData] = useState<Ingredient[]>([]);
     const [priceRange, setPriceRange] = useState<PriceRangeProps>({
-        priceFrom: 0,
-        priceTo: 1000,
+        priceFrom: Number(searchParams.get("priceFrom")) || undefined,
+        priceTo: Number(searchParams.get("priceTo")) || undefined,
     });
 
     const updatePriceRange = (values: Partial<PriceRangeProps>) => {
