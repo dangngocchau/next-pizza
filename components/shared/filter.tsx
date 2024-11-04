@@ -2,7 +2,9 @@
 
 import { CheckboxFiltersGroup, RangeSlider, Title } from "@/components/shared";
 import { Input } from "@/components/ui";
-import { PriceRangeProps, useFilter } from "@/hooks/useFilterIngredients";
+import { useFiltersQuery } from "@/hooks/useFilterQuery";
+import { useFilters } from "@/hooks/useFilters";
+import { useIngredients } from "@/hooks/useIngredients";
 import { useRouter } from "next/navigation";
 import qs from "qs";
 import { useEffect } from "react";
@@ -12,35 +14,10 @@ type Props = {
 };
 
 export const Filters = ({ className }: Props) => {
-    const router = useRouter();
+    const { ingredients: ingredientItems, loading } = useIngredients();
+    const filters = useFilters();
 
-    const {
-        sizes,
-        types,
-        ingredientData: ingredientItems,
-        ingredients,
-        loading,
-        toggleIngredients,
-        toggleSizes,
-        toggleTypes,
-        priceRange,
-        updatePriceRange,
-    } = useFilter();
-
-    useEffect(() => {
-        const filters = {
-            sizes: Array.from(sizes),
-            types: Array.from(types),
-            ingredients: Array.from(ingredients),
-            priceFrom: priceRange.priceFrom,
-            priceTo: priceRange.priceTo,
-        };
-
-        const query = qs.stringify(filters, { arrayFormat: "comma" });
-        router.push(`?${query}`, {
-            scroll: false,
-        });
-    }, [ingredients, sizes, types, priceRange, router]);
+    useFiltersQuery(filters);
 
     return (
         <div className={className}>
@@ -57,8 +34,8 @@ export const Filters = ({ className }: Props) => {
                     { text: "40cm", value: "40" },
                 ]}
                 loading={loading}
-                onClickCheckbox={toggleSizes}
-                selected={sizes}
+                onClickCheckbox={filters.toggleSizes}
+                selected={filters.sizes}
             />
 
             {/* Type  */}
@@ -71,8 +48,8 @@ export const Filters = ({ className }: Props) => {
                     { text: "Traditional", value: "traditional" },
                 ]}
                 loading={loading}
-                onClickCheckbox={toggleTypes}
-                selected={types}
+                onClickCheckbox={filters.toggleTypes}
+                selected={filters.types}
             />
 
             <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
@@ -83,24 +60,24 @@ export const Filters = ({ className }: Props) => {
                         placeholder="0"
                         min={0}
                         max={1000}
-                        value={String(priceRange.priceFrom)}
-                        onChange={(e) => updatePriceRange({ priceFrom: Number(e.target.value) })}
+                        value={String(filters.priceRange.priceFrom)}
+                        onChange={(e) => filters.updatePriceRange({ priceFrom: Number(e.target.value) })}
                     />
                     <Input
                         type="number"
                         min={100}
                         max={1000}
                         placeholder="1000"
-                        value={String(priceRange.priceTo)}
-                        onChange={(e) => updatePriceRange({ priceTo: Number(e.target.value) })}
+                        value={String(filters.priceRange.priceTo)}
+                        onChange={(e) => filters.updatePriceRange({ priceTo: Number(e.target.value) })}
                     />
                 </div>
                 <RangeSlider
                     min={0}
                     max={5000}
                     step={10}
-                    value={[priceRange.priceFrom || 0, priceRange.priceTo || 1000]}
-                    onValueChange={([from, to]) => updatePriceRange({ priceFrom: from, priceTo: to })}
+                    value={[filters.priceRange.priceFrom || 0, filters.priceRange.priceTo || 1000]}
+                    onValueChange={([from, to]) => filters.updatePriceRange({ priceFrom: from, priceTo: to })}
                 />
             </div>
             <CheckboxFiltersGroup
@@ -111,8 +88,8 @@ export const Filters = ({ className }: Props) => {
                 defaultItem={ingredientItems.slice(0, 6)}
                 items={ingredientItems}
                 loading={loading}
-                onClickCheckbox={toggleIngredients}
-                selected={ingredients}
+                onClickCheckbox={filters.toggleIngredients}
+                selected={filters.ingredients}
             />
         </div>
     );
