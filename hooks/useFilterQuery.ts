@@ -23,8 +23,6 @@ export const useFiltersQuery = (filters: Filters) => {
             router.push(`?${query}`, {
                 scroll: false,
             });
-
-            console.log(filters, 999);
         }
 
         isMounted.current = true;

@@ -15,13 +15,7 @@ type Props = {
     categoryId: number;
 };
 
-export const ProductsGroupList = ({
-    title,
-    items,
-    className,
-    listClassName,
-    categoryId,
-}: Props) => {
+export const ProductsGroupList = ({ title, items, className, listClassName, categoryId }: Props) => {
     const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
 
     const intersectionRef = useRef(null);

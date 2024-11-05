@@ -74,7 +74,7 @@ export const Filters = ({ className }: Props) => {
                 </div>
                 <RangeSlider
                     min={0}
-                    max={5000}
+                    max={1000}
                     step={10}
                     value={[filters.priceRange.priceFrom || 0, filters.priceRange.priceTo || 1000]}
                     onValueChange={([from, to]) => filters.updatePriceRange({ priceFrom: from, priceTo: to })}
