@@ -1,7 +1,9 @@
 import { prisma } from "@/prisma/prisma-client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { handleResponse } from "@/utils/handleResponse";
+import { tryCatchWrapper } from "@/utils/tryCatchWrapper";
 
-export async function GET(req: NextRequest) {
+export const GET = tryCatchWrapper(async (req: NextRequest) => {
     const query = req.nextUrl.searchParams.get("query") || "";
 
     const products = await prisma.product.findMany({
@@ -14,5 +16,5 @@ export async function GET(req: NextRequest) {
         take: 5,
     });
 
-    return NextResponse.json(products);
-}
+    return handleResponse(products, "Fetched products successfully");
+});
