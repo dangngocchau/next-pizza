@@ -16,7 +16,6 @@ export const useProductDetails = (id: number): ReturnProps => {
             try {
                 setLoading(true);
                 const product = await ProductServices.getProductById(id);
-                // console.log("product", product);
                 setProduct(product.metadata);
             } catch (error) {
                 console.log(error);

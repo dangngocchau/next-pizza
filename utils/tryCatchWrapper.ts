@@ -3,11 +3,17 @@ import HttpStatusCode from "@/utils/httpStatusCode";
 import { NextRequest, NextResponse } from "next/server";
 
 export function tryCatchWrapper(
-    fn: (req: NextRequest) => Promise<NextResponse>
+    fn: (
+        req: NextRequest,
+        params?: { params: { [key: string]: string } }
+    ) => Promise<NextResponse>
 ) {
-    return async (req: NextRequest) => {
+    return async (
+        req: NextRequest,
+        params: { params: { [key: string]: string } }
+    ) => {
         try {
-            return await fn(req);
+            return await fn(req, params);
         } catch (error) {
             console.error(error);
             return handleResponse(
