@@ -1,17 +1,19 @@
+"use client";
+
 import { Container, ProductImage, Title } from "@/components/shared";
 import { GroupVariants } from "@/components/shared/group-variants";
-import { prisma } from "@/prisma/prisma-client";
+import { useProductDetails } from "@/hooks/useProductDetails";
 import { notFound } from "next/navigation";
 
 type ProductPageProps = {
     params: { id: string };
 };
 
-export default async function ProductPage({ params: { id } }: ProductPageProps) {
-    const product = await prisma.product.findUnique({ where: { id: Number(id) } });
+export default function ProductPage({ params: { id } }: ProductPageProps) {
+    const { product, loading } = useProductDetails(Number(id));
 
     if (!product) {
-        return notFound();
+        return;
     }
 
     return (
@@ -20,9 +22,14 @@ export default async function ProductPage({ params: { id } }: ProductPageProps) 
                 <ProductImage imageUrl={product.imageUrl} size={40} />
 
                 <div className="w-[490px] bg-[#f7f6f5] p-7">
-                    <Title text={product.name} size="md" className="font-extrabold mb-1" />
+                    <Title
+                        text={product.name}
+                        size="md"
+                        className="font-extrabold mb-1"
+                    />
                     <p className="text-gray-400">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga, animi!
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. Fuga, animi!
                     </p>
 
                     <GroupVariants

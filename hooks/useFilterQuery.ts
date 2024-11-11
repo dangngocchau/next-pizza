@@ -1,13 +1,13 @@
-import React from "react";
-import qs from "qs";
-import { useRouter } from "next/navigation";
 import { Filters } from "@/hooks/useFilters";
+import { useRouter } from "next/navigation";
+import qs from "qs";
+import { useEffect, useRef } from "react";
 
 export const useFiltersQuery = (filters: Filters) => {
-    const isMounted = React.useRef(false);
+    const isMounted = useRef(false);
     const router = useRouter();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (isMounted.current) {
             const params = {
                 ...filters.priceRange,

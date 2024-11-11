@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { Api } from "@/services/api-client";
+import ProductServices from "@/services/products.service";
 import { Product } from "@prisma/client";
 import { Search } from "lucide-react";
 import Image from "next/image";
@@ -37,10 +38,9 @@ export const SearchInput = ({ classMame }: Props) => {
 
     //TODO: Store to zustand later
     useDebounce(
-        () => {
-            Api.products.search(searchQuery).then((data) => {
-                setProducts(data);
-            });
+        async () => {
+            const res = await ProductServices.search(searchQuery);
+            setProducts(res.metadata);
         },
         250,
         [searchQuery]

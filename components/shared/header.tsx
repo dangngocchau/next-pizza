@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                 <Link href="/">
                     <div className="flex items-center gap-4">
                         <Image
-                            src="/logo.png"
+                            src="/svg/logo.svg"
                             alt="logo"
                             width={35}
                             height={35}
