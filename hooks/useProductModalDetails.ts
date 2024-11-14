@@ -11,8 +11,6 @@ export const useProductModalDetails = (id: number): ReturnProps => {
     const [loading, setLoading] = useState<boolean>(false);
     const [product, setProduct] = useState<Product | null>(null);
 
-    console.log(id);
-
     useEffect(() => {
         async function fetchProductDetails() {
             try {

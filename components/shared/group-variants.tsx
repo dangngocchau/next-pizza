@@ -25,7 +25,7 @@ export const GroupVariants = ({ className, items, onClick, selectedValue }: Prop
                     key={item.name}
                     onClick={() => onClick?.(item.value)}
                     className={cn(
-                        "flex items-center justify-center cursor-pointer h-[30px] px-5 flex-1 rounded-3xl transition-all duration-400 text-sm",
+                        "flex items-center justify-center cursor-pointer h-[30px] px-5 flex-1 rounded-3xl transition-all duration-400 text-sm bg-slate-100 text-black hover:bg-white",
                         {
                             "bg-white shadow": selectedValue === item.value,
                             "text-gray-500 opacity-50 pointer-events-none": item.disabled,

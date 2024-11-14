@@ -2,7 +2,6 @@
 
 import { ChooseProductModal } from "@/components/shared/modals/choose-product-modal";
 import { useProductModalDetails } from "@/hooks/useProductModalDetails";
-import { notFound } from "next/navigation";
 
 type ProductPageModalPageProps = {
     params: { id: string };
