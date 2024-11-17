@@ -1,13 +1,12 @@
-import { IProduct } from "@/@types/prisma";
 import { IngredientItem, Title } from "@/components/shared";
 import { GroupVariants } from "@/components/shared/group-variants";
 import { PizzaImage } from "@/components/shared/pizza-image";
 import { Button } from "@/components/ui";
-import { PizzaSize, pizzaSizes, PizzaType, pizzaTypes } from "@/constants/pizza";
+import { mapPizzaType, PizzaSize, PizzaType, pizzaTypes } from "@/constants/pizza";
+import { usePizzaDetail } from "@/hooks/usePizzaDetails";
+import { calcTotalPizzaPrice } from "@/lib/calc-total-pizza-price";
 import { cn } from "@/lib/utils";
 import { Ingredient, ProductItem } from "@prisma/client";
-import React, { useState } from "react";
-import { useSet } from "react-use";
 
 type Props = {
     className?: string;
@@ -15,14 +14,24 @@ type Props = {
     imageUrl: string;
     ingredients: Ingredient[];
     items: ProductItem[];
-    onClickAdd?: VoidFunction;
+    onClickAddToCart?: VoidFunction;
 };
 
-export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onClickAdd }: Props) => {
-    const [size, setSize] = useState<PizzaSize>(20);
-    const [type, setType] = useState<PizzaType>(1);
+export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onClickAddToCart }: Props) => {
+    const { size, type, selectedIngredients, availablePizzaSizes, setSize, setType, toggleIngredient } =
+        usePizzaDetail(items);
 
-    const [selectedIngredients, { toggle: toggleIngredient }] = useSet(new Set<number>([]));
+    const totalPrice = calcTotalPizzaPrice(items, ingredients, size, type, selectedIngredients);
+
+    const handleClickAdd = () => {
+        onClickAddToCart?.();
+        console.log("Add to cart", {
+            name,
+            size,
+            type,
+            ingredients: selectedIngredients,
+        });
+    };
 
     return (
         <div className={cn(className, "flex flex-1")}>
@@ -30,11 +39,11 @@ export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl,
 
             <div className="w-[490px] bg-[#f7f6f5] p-7">
                 <Title text={name} size="md" className="font-extrabold mb-1" />
-                <p className="text-gray-400">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <p className="text-gray-400">{`${size} cm, ${mapPizzaType[type]} pizza`}</p>
 
                 <div className="flex flex-col mt-5">
                     <GroupVariants
-                        items={pizzaSizes}
+                        items={availablePizzaSizes}
                         selectedValue={String(size)}
                         onClick={(value) => setSize(Number(value) as PizzaSize)}
                     />
@@ -61,7 +70,10 @@ export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl,
                     </div>
                 </div>
 
-                <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">Lorem ipsum dolor sit.</Button>
+                <Button
+                    onClick={handleClickAdd}
+                    className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10"
+                >{`Add To Cart With ${totalPrice}$`}</Button>
             </div>
         </div>
     );

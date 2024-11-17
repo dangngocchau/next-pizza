@@ -4,7 +4,7 @@ import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import React from "react";
 
-type Variant = {
+export type Variant = {
     name: string;
     value: string;
     disabled?: boolean;
