@@ -1,15 +1,16 @@
+import { IProduct } from "@/@types/prisma";
 import ProductServices from "@/services/products.service";
 import { Product } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 export interface ReturnProps {
-    product: Product | null;
+    product: IProduct | null;
     loading: boolean;
 }
 
 export const useProductModalDetails = (id: number): ReturnProps => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [product, setProduct] = useState<Product | null>(null);
+    const [product, setProduct] = useState<IProduct | null>(null);
 
     useEffect(() => {
         async function fetchProductDetails() {
