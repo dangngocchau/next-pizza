@@ -16,11 +16,16 @@ type Props = {
 };
 
 export const CartDrawer = ({ className, children }: Props) => {
-    const { items, fetchCartItems, totalAmount } = useCartStore();
+    const { items, fetchCartItems, totalAmount, updateItemQuantity, removeCartItem } = useCartStore();
 
     useEffect(() => {
         fetchCartItems();
     }, [fetchCartItems]);
+
+    const handleClickCountButton = (type: "plus" | "minus", id: number, quantity: number) => {
+        const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
+        updateItemQuantity(id, newQuantity);
+    };
 
     return (
         <Sheet>
@@ -46,6 +51,8 @@ export const CartDrawer = ({ className, children }: Props) => {
                             name={item.name}
                             price={item.price}
                             quantity={item.quantity}
+                            onClickCountButton={(type) => handleClickCountButton(type, item.id, item.quantity)}
+                            onClickRemoveItem={() => removeCartItem(item.id)}
                         />
                     ))}
                 </div>
@@ -57,11 +64,11 @@ export const CartDrawer = ({ className, children }: Props) => {
                                 Total
                                 <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                             </span>
-                            <span className="font-bold text-lg">{totalAmount}</span>
+                            <span className="font-bold text-lg">{totalAmount}$</span>
                         </div>
                         <Link href={"/cart"}>
                             <Button type="submit" className="w-full h-12 text-base">
-                                Test
+                                Place Order
                                 <ArrowRight className="w-5 ml-2" />
                             </Button>
                         </Link>

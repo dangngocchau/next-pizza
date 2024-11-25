@@ -4,4 +4,5 @@ export enum ApiRoutes {
     GET_PRODUCT_BY_ID = "products/:id",
     GET_PRODUCT_MODAL_BY_ID = "products/product-modal/:id",
     CART = "cart",
+    CART_ITEM = "cart/:id",
 }

@@ -10,6 +10,16 @@ class CartService extends BaseApiService {
     async getCart() {
         return this.httpClient.get<Response<CartDTO>>(ApiRoutes.CART);
     }
+
+    async updateCartItemQuantity(id: number, quantity: number): Promise<Response<CartDTO>> {
+        return this.httpClient.patch<Response<CartDTO>>(ApiRoutes.CART_ITEM.replace(":id", id.toString()), {
+            quantity,
+        });
+    }
+
+    async deleteCartItem(id: number): Promise<Response<CartDTO>> {
+        return this.httpClient.delete<Response<CartDTO>>(ApiRoutes.CART_ITEM.replace(":id", id.toString()));
+    }
 }
 
 const CartServices = new CartService();
