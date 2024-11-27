@@ -30,7 +30,7 @@ const getUserCart = async (token: string) => {
     });
 };
 
-const updateCartTotalAmount = async (cartId: number, token: string) => {
+export const updateCartTotalAmount = async (cartId: number, token: string) => {
     const userCart = await getUserCart(token);
 
     if (!userCart) {

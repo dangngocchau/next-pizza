@@ -1,6 +1,6 @@
 import BaseApiService from "@/services/baseApi.service";
 import { ApiRoutes } from "@/services/constant";
-import { CartDTO } from "@/services/dto/cart.dto";
+import { CartDTO, CreateCartItemValues } from "@/services/dto/cart.dto";
 import { ResponseType as Response } from "@/utils/response.type";
 
 class CartService extends BaseApiService {
@@ -19,6 +19,10 @@ class CartService extends BaseApiService {
 
     async deleteCartItem(id: number): Promise<Response<CartDTO>> {
         return this.httpClient.delete<Response<CartDTO>>(ApiRoutes.CART_ITEM.replace(":id", id.toString()));
+    }
+
+    async addCartItem(values: CreateCartItemValues): Promise<Response<CartDTO>> {
+        return this.httpClient.post<Response<CartDTO>>(ApiRoutes.CART, values);
     }
 }
 

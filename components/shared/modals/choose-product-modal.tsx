@@ -5,6 +5,7 @@ import { ChoosePizzaForm } from "@/components/shared/choose-pizza-form";
 import { ChooseProductForm } from "@/components/shared/choose-product-form";
 import { DialogContent, Dialog } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -20,9 +21,24 @@ export const ChooseProductModal = ({ className, product, loading }: Props) => {
     // Check if the product has a pizzaType property
     const isPizzaForm = Boolean(product?.items[0].pizzaType);
 
+    const addCartItem = useCartStore((state) => state.addCartItem);
+
     if (!product) {
         return null;
     }
+
+    const onAddProduct = () => {
+        addCartItem({
+            productItemId: product.items[0].id,
+        });
+    };
+
+    const onAddPizza = (productItemId: number, ingredients: number[]) => {
+        addCartItem({
+            productItemId,
+            ingredients,
+        });
+    };
 
     return (
         <Dialog open={true} onOpenChange={() => router.back()}>
@@ -35,9 +51,15 @@ export const ChooseProductModal = ({ className, product, loading }: Props) => {
                         name={product?.name}
                         ingredients={product.ingredients}
                         items={product.items}
+                        onSubmit={onAddPizza}
                     />
                 ) : (
-                    <ChooseProductForm imageUrl={product?.imageUrl} name={product?.name} />
+                    <ChooseProductForm
+                        imageUrl={product?.imageUrl}
+                        name={product?.name}
+                        onSubmit={onAddProduct}
+                        price={product.items[0].price}
+                    />
                 )}
             </DialogContent>
         </Dialog>
