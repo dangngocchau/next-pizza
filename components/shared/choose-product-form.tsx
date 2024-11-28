@@ -6,11 +6,12 @@ import React from "react";
 type Props = {
     className?: string;
     name: string;
+    price: number;
     imageUrl: string;
-    onClickAdd?: VoidFunction;
+    onSubmit?: VoidFunction;
 };
 
-export const ChooseProductForm = ({ className, name, imageUrl, onClickAdd }: Props) => {
+export const ChooseProductForm = ({ className, name, imageUrl, onSubmit, price }: Props) => {
     return (
         <div className={cn(className, "flex flex-1")}>
             <div className="flex items-center justify-center flex-1 relative w-full">
@@ -24,7 +25,9 @@ export const ChooseProductForm = ({ className, name, imageUrl, onClickAdd }: Pro
                 <Title text={name} size="md" className="font-extrabold mb-1" />
                 <p className="text-gray-400">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
 
-                <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">Lorem ipsum dolor sit.</Button>
+                <Button onClick={onSubmit} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                    {`Add To Cart With ${price}$`}
+                </Button>
             </div>
         </div>
     );
