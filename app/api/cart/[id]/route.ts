@@ -30,17 +30,22 @@ const getUserCart = async (token: string) => {
     });
 };
 
-const updateCartTotalAmount = async (cartId: number, token: string) => {
+export const updateCartTotalAmount = async (cartId: number, token: string) => {
     const userCart = await getUserCart(token);
 
     if (!userCart) {
         return handleResponse(null, "Cart not found");
     }
 
-    const cartTotalAmount = userCart?.items.reduce((acc, item) => acc + calcCartItemTotalPrice(item), 0);
+    const cartTotalAmount = userCart?.items.reduce(
+        (acc, item) => acc + calcCartItemTotalPrice(item),
+        0
+    );
+
+    console.log("cartTotalAmount", cartTotalAmount);
 
     return await prisma.cart.update({
-        where: { id: cartId },
+        where: { id: userCart.id },
         data: { totalAmount: cartTotalAmount },
         include: {
             items: {
@@ -82,7 +87,9 @@ export const DELETE = tryCatchWrapper(async (req: NextRequest, params) => {
         return NextResponse.json({ message: "Cart token not found" });
     }
 
-    const cartItem = await prisma.cartItem.findFirst({ where: { id: Number(id) } });
+    const cartItem = await prisma.cartItem.findFirst({
+        where: { id: Number(id) },
+    });
 
     if (!cartItem) {
         return NextResponse.json({ message: "Cart item not found" });

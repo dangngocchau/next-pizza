@@ -14,23 +14,19 @@ type Props = {
     imageUrl: string;
     ingredients: Ingredient[];
     items: ProductItem[];
-    onClickAddToCart?: VoidFunction;
+    onSubmit: (id: number, ingredients: number[]) => void;
 };
 
-export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onClickAddToCart }: Props) => {
-    const { size, type, selectedIngredients, availablePizzaSizes, setSize, setType, toggleIngredient } =
+export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onSubmit }: Props) => {
+    const { size, type, selectedIngredients, availablePizzaSizes, setSize, setType, toggleIngredient, currentItemId } =
         usePizzaDetail(items);
 
     const totalPrice = calcTotalPizzaPrice(items, ingredients, size, type, selectedIngredients);
 
     const handleClickAdd = () => {
-        onClickAddToCart?.();
-        console.log("Add to cart", {
-            name,
-            size,
-            type,
-            ingredients: selectedIngredients,
-        });
+        if (currentItemId) {
+            onSubmit(currentItemId, Array.from(selectedIngredients));
+        }
     };
 
     return (
