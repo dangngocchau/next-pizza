@@ -21,8 +21,8 @@ class CartService extends BaseApiService {
         return this.httpClient.delete<Response<CartDTO>>(ApiRoutes.CART_ITEM.replace(":id", id.toString()));
     }
 
-    async addCartItem(values: CreateCartItemValues): Promise<Response<CartDTO>> {
-        return this.httpClient.post<Response<CartDTO>>(ApiRoutes.CART, values);
+    async addCartItem(values: CreateCartItemValues): Promise<CartDTO> {
+        return this.httpClient.post<CartDTO>(ApiRoutes.CART, values);
     }
 }
 

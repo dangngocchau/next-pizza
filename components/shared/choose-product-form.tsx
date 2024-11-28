@@ -9,9 +9,10 @@ type Props = {
     price: number;
     imageUrl: string;
     onSubmit?: VoidFunction;
+    loading?: boolean;
 };
 
-export const ChooseProductForm = ({ className, name, imageUrl, onSubmit, price }: Props) => {
+export const ChooseProductForm = ({ className, name, imageUrl, onSubmit, price, loading }: Props) => {
     return (
         <div className={cn(className, "flex flex-1")}>
             <div className="flex items-center justify-center flex-1 relative w-full">
@@ -25,7 +26,11 @@ export const ChooseProductForm = ({ className, name, imageUrl, onSubmit, price }
                 <Title text={name} size="md" className="font-extrabold mb-1" />
                 <p className="text-gray-400">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
 
-                <Button onClick={onSubmit} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                <Button
+                    onClick={() => onSubmit && onSubmit()}
+                    loading={loading}
+                    className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10"
+                >
                     {`Add To Cart With ${price}$`}
                 </Button>
             </div>

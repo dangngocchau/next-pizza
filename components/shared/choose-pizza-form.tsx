@@ -15,9 +15,10 @@ type Props = {
     ingredients: Ingredient[];
     items: ProductItem[];
     onSubmit: (id: number, ingredients: number[]) => void;
+    loading?: boolean;
 };
 
-export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onSubmit }: Props) => {
+export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl, onSubmit, loading }: Props) => {
     const { size, type, selectedIngredients, availablePizzaSizes, setSize, setType, toggleIngredient, currentItemId } =
         usePizzaDetail(items);
 
@@ -68,6 +69,7 @@ export const ChoosePizzaForm = ({ className, name, ingredients, items, imageUrl,
 
                 <Button
                     onClick={handleClickAdd}
+                    loading={loading}
                     className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10"
                 >{`Add To Cart With ${totalPrice}$`}</Button>
             </div>

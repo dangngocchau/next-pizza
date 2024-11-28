@@ -8,36 +8,35 @@ import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import React from "react";
+import toast from "react-hot-toast";
 
 type Props = {
     className?: string;
     product: IProduct | null;
-    loading: boolean;
 };
 
-export const ChooseProductModal = ({ className, product, loading }: Props) => {
+export const ChooseProductModal = ({ className, product }: Props) => {
     const router = useRouter();
 
     // Check if the product has a pizzaType property
     const isPizzaForm = Boolean(product?.items[0].pizzaType);
 
-    const addCartItem = useCartStore((state) => state.addCartItem);
+    const { addCartItem, loading } = useCartStore((state) => state);
 
     if (!product) {
         return null;
     }
 
-    const onAddProduct = () => {
-        addCartItem({
-            productItemId: product.items[0].id,
-        });
-    };
+    const onSubmit = (productItemId?: number, ingredients?: number[]) => {
+        const itemId = productItemId || product.items[0].id;
 
-    const onAddPizza = (productItemId: number, ingredients: number[]) => {
-        addCartItem({
-            productItemId,
-            ingredients,
-        });
+        addCartItem(
+            {
+                productItemId: itemId,
+                ingredients,
+            },
+            product.name
+        );
     };
 
     return (
@@ -51,14 +50,16 @@ export const ChooseProductModal = ({ className, product, loading }: Props) => {
                         name={product?.name}
                         ingredients={product.ingredients}
                         items={product.items}
-                        onSubmit={onAddPizza}
+                        onSubmit={onSubmit}
+                        loading={loading}
                     />
                 ) : (
                     <ChooseProductForm
                         imageUrl={product?.imageUrl}
                         name={product?.name}
-                        onSubmit={onAddProduct}
+                        onSubmit={onSubmit}
                         price={product.items[0].price}
+                        loading={loading}
                     />
                 )}
             </DialogContent>

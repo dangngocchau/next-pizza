@@ -1,6 +1,7 @@
 import { CartStateItem, getCartDetails } from "@/lib/get-cart-details";
 import CartServices from "@/services/cart.service";
 import { CreateCartItemValues } from "@/services/dto/cart.dto";
+import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export interface CartState {
@@ -16,7 +17,7 @@ export interface CartState {
     updateItemQuantity: (id: number, quantity: number) => Promise<void>;
 
     /* Запрос на добавление товара в корзину */
-    addCartItem: (values: CreateCartItemValues) => Promise<void>;
+    addCartItem: (values: CreateCartItemValues, productName: string) => Promise<void>;
 
     /* Запрос на удаление товара из корзины */
     removeCartItem: (id: number) => Promise<void>;
@@ -31,8 +32,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         try {
             set({ loading: true, error: false });
             const response = await CartServices.getCart();
-            const data = getCartDetails(response.metadata);
-            set({ ...data });
+            set(getCartDetails(response.metadata));
         } catch (error) {
             set({ error: true, loading: false });
         } finally {
@@ -42,10 +42,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     updateItemQuantity: async (id: number, quantity: number) => {
         try {
             set({ loading: true, error: false });
-            const data = await CartServices.updateCartItemQuantity(
-                id,
-                quantity
-            );
+            const data = await CartServices.updateCartItemQuantity(id, quantity);
             set(getCartDetails(data.metadata));
         } catch (error) {
             set({ error: true });
@@ -64,13 +61,15 @@ export const useCartStore = create<CartState>((set, get) => ({
             set({ loading: false });
         }
     },
-    addCartItem: async (values: CreateCartItemValues) => {
+    addCartItem: async (values: CreateCartItemValues, productName: string) => {
         try {
             set({ loading: true, error: false });
             const data = await CartServices.addCartItem(values);
-            set(getCartDetails(data.metadata));
+            set(getCartDetails(data));
+            toast.success(`${productName} added to cart`);
         } catch (error) {
             set({ error: true });
+            toast.error(`Failed to add ${productName} to cart`);
         } finally {
             set({ loading: false });
         }

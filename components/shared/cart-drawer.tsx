@@ -2,15 +2,9 @@
 
 import { CartDrawerItem } from "@/components/shared/cart-drawer-item";
 import { Button } from "@/components/ui";
-import {
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { PizzaSize, PizzaType } from "@/constants/pizza";
+import { useCart } from "@/hooks/use-cart";
 import { getCartItemDetail } from "@/lib/get-cart-item-detail";
 import { useCartStore } from "@/store/cart";
 import { ArrowRight } from "lucide-react";
@@ -23,24 +17,9 @@ type Props = {
 };
 
 export const CartDrawer = ({ className, children }: Props) => {
-    const {
-        items,
-        fetchCartItems,
-        totalAmount,
-        updateItemQuantity,
-        removeCartItem,
-    } = useCartStore();
+    const { totalAmount, updateItemQuantity, items, removeCartItem } = useCart();
 
-    useEffect(() => {
-        console.log("fetchCartItems");
-        fetchCartItems();
-    }, [fetchCartItems]);
-
-    const handleClickCountButton = (
-        type: "plus" | "minus",
-        id: number,
-        quantity: number
-    ) => {
+    const handleClickCountButton = (type: "plus" | "minus", id: number, quantity: number) => {
         const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
         updateItemQuantity(id, newQuantity);
     };
@@ -51,35 +30,28 @@ export const CartDrawer = ({ className, children }: Props) => {
             <SheetContent className="flex flex-col justify-between pb-0 bg-[#F4F1EE]">
                 <SheetHeader>
                     <SheetTitle>
-                        <span className="font-bold">
-                            {items.length} Items In Your Cart
-                        </span>
+                        <span className="font-bold">{items.length} Items In Your Cart</span>
                     </SheetTitle>
                 </SheetHeader>
 
                 <div className="-mx-6 mt-5 overflow-auto flex-1 scrollbar">
                     {items.map((item) => (
-                        <CartDrawerItem
-                            key={item.id}
-                            details={getCartItemDetail(
-                                item.pizzaType as PizzaType,
-                                item.pizzaSize as PizzaSize,
-                                item.ingredients
-                            )}
-                            imageUrl={item.imageUrl}
-                            id={item.id}
-                            name={item.name}
-                            price={item.price}
-                            quantity={item.quantity}
-                            onClickCountButton={(type) =>
-                                handleClickCountButton(
-                                    type,
-                                    item.id,
-                                    item.quantity
-                                )
-                            }
-                            onClickRemoveItem={() => removeCartItem(item.id)}
-                        />
+                        <div className="mb-2" key={item.id}>
+                            <CartDrawerItem
+                                details={getCartItemDetail(
+                                    item.pizzaType as PizzaType,
+                                    item.pizzaSize as PizzaSize,
+                                    item.ingredients
+                                )}
+                                imageUrl={item.imageUrl}
+                                id={item.id}
+                                name={item.name}
+                                price={item.price}
+                                quantity={item.quantity}
+                                onClickCountButton={(type) => handleClickCountButton(type, item.id, item.quantity)}
+                                onClickRemoveItem={() => removeCartItem(item.id)}
+                            />
+                        </div>
                     ))}
                 </div>
 
@@ -90,15 +62,10 @@ export const CartDrawer = ({ className, children }: Props) => {
                                 Total
                                 <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                             </span>
-                            <span className="font-bold text-lg">
-                                {totalAmount}$
-                            </span>
+                            <span className="font-bold text-lg">{totalAmount}$</span>
                         </div>
                         <Link href={"/cart"}>
-                            <Button
-                                type="submit"
-                                className="w-full h-12 text-base"
-                            >
+                            <Button type="submit" className="w-full h-12 text-base">
                                 Place Order
                                 <ArrowRight className="w-5 ml-2" />
                             </Button>
