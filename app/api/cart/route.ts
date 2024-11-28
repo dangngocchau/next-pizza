@@ -71,8 +71,6 @@ export const POST = tryCatchWrapper(async (req: NextRequest) => {
 
     const userCart = await findOrCreateCart(token);
 
-    console.log("userCart", userCart);
-
     const findCartItem = await prisma.cartItem.findFirst({
         where: {
             cartId: userCart.id,
