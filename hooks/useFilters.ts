@@ -1,7 +1,7 @@
 import { useIngredients } from "@/hooks/useIngredients";
 import { Api } from "@/services/api-client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSet } from "react-use";
 
 export type Ingredient = {
@@ -54,21 +54,24 @@ export const useFilters = (): ReturnProps => {
         priceTo: Number(searchParams.get("priceTo")) || undefined,
     });
 
-    const updatePriceRange = (values: Partial<PriceRangeProps>) => {
+    const updatePriceRange = useCallback((values: Partial<PriceRangeProps>) => {
         setPriceRange((prev) => ({
             ...prev,
             ...values,
         }));
-    };
+    }, []);
 
-    return {
-        sizes,
-        types,
-        ingredients,
-        toggleSizes,
-        toggleTypes,
-        toggleIngredients,
-        updatePriceRange,
-        priceRange,
-    };
+    return useMemo(
+        () => ({
+            sizes,
+            types,
+            ingredients,
+            toggleSizes,
+            toggleTypes,
+            toggleIngredients,
+            updatePriceRange,
+            priceRange,
+        }),
+        [sizes, types, ingredients, priceRange, toggleSizes, toggleTypes, toggleIngredients, updatePriceRange]
+    );
 };

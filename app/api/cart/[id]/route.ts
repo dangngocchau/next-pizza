@@ -90,7 +90,7 @@ export const DELETE = tryCatchWrapper(async (req: NextRequest, params) => {
         return NextResponse.json({ message: "Cart item not found" });
     }
 
-    const deletedItem = await prisma.cartItem.delete({ where: { id } });
+    await prisma.cartItem.delete({ where: { id } });
 
     const updatedCart = await updateCartTotalAmount(id, token);
 

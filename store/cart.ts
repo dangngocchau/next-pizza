@@ -17,7 +17,7 @@ export interface CartState {
     updateItemQuantity: (id: number, quantity: number) => Promise<void>;
 
     /* Запрос на добавление товара в корзину */
-    addCartItem: (values: CreateCartItemValues, productName: string) => Promise<void>;
+    addCartItem: (values: CreateCartItemValues, productName: string, callback?: VoidFunction) => Promise<void>;
 
     /* Запрос на удаление товара из корзины */
     removeCartItem: (id: number) => Promise<void>;
@@ -52,16 +52,23 @@ export const useCartStore = create<CartState>((set, get) => ({
     },
     removeCartItem: async (id: number) => {
         try {
-            set({ loading: true, error: false });
+            set((state) => ({
+                loading: true,
+                error: false,
+                items: state.items.map((item) => (item.id === id ? { ...item, disabled: true } : item)),
+            }));
             const data = await CartServices.deleteCartItem(id);
             set(getCartDetails(data.metadata));
         } catch (error) {
             set({ error: true });
         } finally {
-            set({ loading: false });
+            set((state) => ({
+                loading: false,
+                items: state.items.map((item) => ({ ...item, disabled: false })),
+            }));
         }
     },
-    addCartItem: async (values: CreateCartItemValues, productName: string) => {
+    addCartItem: async (values: CreateCartItemValues, productName: string, callback?: VoidFunction) => {
         try {
             set({ loading: true, error: false });
             const data = await CartServices.addCartItem(values);
@@ -72,6 +79,7 @@ export const useCartStore = create<CartState>((set, get) => ({
             toast.error(`Failed to add ${productName} to cart`);
         } finally {
             set({ loading: false });
+            callback?.();
         }
     },
 }));

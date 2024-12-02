@@ -6,8 +6,21 @@ import { tryCatchWrapper } from "@/utils/tryCatchWrapper";
 export const GET = tryCatchWrapper(async (req: NextRequest, params) => {
     const id = params?.params.id;
 
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.findFirst({
         where: { id: Number(id) },
+        include: {
+            ingredients: true,
+            category: {
+                include: {
+                    products: {
+                        include: {
+                            items: true,
+                        },
+                    },
+                },
+            },
+            items: true,
+        },
     });
 
     return handleResponse(product, "Fetched products successfully");

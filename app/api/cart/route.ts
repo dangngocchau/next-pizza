@@ -94,21 +94,16 @@ export const POST = tryCatchWrapper(async (req: NextRequest) => {
                 quantity: findCartItem.quantity + 1,
             },
         });
-
-        const updatedCart = await updateCartTotalAmount(userCart.id, token);
-        const resp = NextResponse.json(updatedCart);
-        resp.cookies.set("cartToken", token);
-        return resp;
+    } else {
+        await prisma.cartItem.create({
+            data: {
+                cartId: userCart.id,
+                productItemId: body.productItemId,
+                quantity: 1,
+                ingredients: { connect: body.ingredients?.map((id) => ({ id })) },
+            },
+        });
     }
-
-    await prisma.cartItem.create({
-        data: {
-            cartId: userCart.id,
-            productItemId: body.productItemId,
-            quantity: 1,
-            ingredients: { connect: body.ingredients?.map((id) => ({ id })) },
-        },
-    });
 
     const updatedUserCart = await updateCartTotalAmount(userCart.id, token);
     const resp = NextResponse.json(updatedUserCart);

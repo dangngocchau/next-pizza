@@ -5,9 +5,6 @@ import { Input } from "@/components/ui";
 import { useFiltersQuery } from "@/hooks/useFilterQuery";
 import { useFilters } from "@/hooks/useFilters";
 import { useIngredients } from "@/hooks/useIngredients";
-import { useRouter } from "next/navigation";
-import qs from "qs";
-import { useEffect } from "react";
 
 type Props = {
     className?: string;

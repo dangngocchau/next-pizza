@@ -6,10 +6,11 @@ import { cn } from "@/lib/utils";
 import { useIntersection } from "react-use";
 import React, { useEffect, useRef } from "react";
 import { useCategoryStore } from "@/store/category";
+import { IProduct } from "@/@types/prisma";
 
 type Props = {
     title: string;
-    items: any[];
+    items: IProduct[];
     className?: string;
     listClassName?: string;
     categoryId: number;
@@ -40,6 +41,7 @@ export const ProductsGroupList = ({ title, items, className, listClassName, cate
                         name={product.name}
                         imageUrl={product.imageUrl}
                         price={product.items[0].price}
+                        ingedients={product.ingredients}
                     />
                 ))}
             </div>
