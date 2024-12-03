@@ -20,7 +20,7 @@ import { useCartStore } from "@/store/cart";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
     className?: string;
@@ -29,6 +29,7 @@ type Props = {
 
 export const CartDrawer = ({ className, children }: Props) => {
     const { totalAmount, updateItemQuantity, items, removeCartItem } = useCart();
+    const [redirecting, setRedirecting] = useState(false);
 
     const handleClickCountButton = (type: "plus" | "minus", id: number, quantity: number) => {
         const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
@@ -99,8 +100,12 @@ export const CartDrawer = ({ className, children }: Props) => {
                                         </span>
                                         <span className="font-bold text-lg">{totalAmount}$</span>
                                     </div>
-                                    <Link href={"/cart"}>
-                                        <Button type="submit" className="w-full h-12 text-base">
+                                    <Link href={"/checkout"}>
+                                        <Button
+                                            onClick={() => setRedirecting(true)}
+                                            type="submit"
+                                            className="w-full h-12 text-base"
+                                        >
                                             Place Order
                                             <ArrowRight className="w-5 ml-2" />
                                         </Button>
