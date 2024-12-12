@@ -1,6 +1,7 @@
 import { CheckoutItemDetails } from "@/components/shared/checkout-item-details";
 import { WhiteBlock } from "@/components/shared/white-block";
-import { Button } from "@/components/ui";
+import { Button, Skeleton } from "@/components/ui";
+import { cn } from "@/lib/utils";
 import { ArrowRight, Package, Percent, Truck } from "lucide-react";
 import React from "react";
 
@@ -10,17 +11,23 @@ const DELIVERY_FEE = 250;
 type Props = {
     totalAmount: number;
     className?: string;
+    loading?: boolean;
 };
 
-export default function CheckoutSidebar({ className, totalAmount }: Props) {
+export default function CheckoutSidebar({ totalAmount, className, loading }: Props) {
     const vatPrice = (totalAmount * VAT) / 100;
     const totalPrice = totalAmount + vatPrice + DELIVERY_FEE;
 
     return (
-        <WhiteBlock className="p-6 sticky top-4">
+        <WhiteBlock className={cn("p-6 sticky top-4", className)}>
             <div className="flex flex-col gap-1">
                 <span className="text-xl">Total</span>
-                <span className="font-extrabold text-4xl">{totalPrice}$</span>
+
+                {loading ? (
+                    <Skeleton className="w-48 h-10" />
+                ) : (
+                    <span className="font-extrabold text-4xl">{totalPrice}$</span>
+                )}
             </div>
 
             <CheckoutItemDetails
@@ -30,7 +37,7 @@ export default function CheckoutSidebar({ className, totalAmount }: Props) {
                         Price
                     </div>
                 }
-                value={`${totalAmount}`}
+                value={loading ? <Skeleton className="h-6 w-14 rounded-[6px]" /> : String(totalAmount)}
             />
             <CheckoutItemDetails
                 title={
@@ -39,7 +46,7 @@ export default function CheckoutSidebar({ className, totalAmount }: Props) {
                         VAT
                     </div>
                 }
-                value={String(vatPrice)}
+                value={loading ? <Skeleton className="h-6 w-14 rounded-[6px]" /> : String(vatPrice)}
             />
             <CheckoutItemDetails
                 title={
@@ -48,7 +55,7 @@ export default function CheckoutSidebar({ className, totalAmount }: Props) {
                         Shipping Fee
                     </div>
                 }
-                value={String(DELIVERY_FEE)}
+                value={loading ? <Skeleton className="h-6 w-14 rounded-[6px]" /> : String(DELIVERY_FEE)}
             />
             <Button type="submit" className="w-full h-14 rounded-2xl text-base font-bold">
                 Paid

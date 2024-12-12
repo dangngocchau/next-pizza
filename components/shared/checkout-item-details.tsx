@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 type Props = {
     className?: string;
     title?: ReactNode;
-    value?: string;
+    value?: ReactNode;
 };
 
 export function CheckoutItemDetails({ className, title, value }: Props) {
